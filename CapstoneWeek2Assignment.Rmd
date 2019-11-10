@@ -1,0 +1,135 @@
+---
+title: "Coursera Data Science Capstone Peer-Reviewed Assignment Week 2"
+author: "Ali Pourkhesalian"
+date: "11/11/2019"
+output: html_document
+---
+
+## Coursera Data Science Capstone (Week 2)  
+
+The presented document shows some data exploratroy analysis on the text data that can be downloaded from [here](https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip).  
+The main objective of this assignment is to make the sample corpus, build the 2-gram and 3-gram TDM and carry out exploratory analysis on the corpus.  
+
+## Preparation  
+
+The following packages are required:
+```{r packages, echo=TRUE, message=FALSE, warning=FALSE, comment=""}
+library(NLP)
+library(ggplot2)
+library(tm)
+library(textmineR)
+library(wordcloud)
+library(stringr)
+library(RWeka)
+library(SnowballC)
+library(data.table)
+```
+
+Reading text files:  
+```{r dirset, warning=FALSE}
+dataBlogEn <- readLines("en_US.blogs.txt", encoding = "UTF-8", skipNul = TRUE)
+dataNewsEn <- readLines("en_US.news.txt", encoding = "UTF-8", skipNul = TRUE)
+dataTwitterEn <- readLines("en_US.twitter.txt", encoding = "UTF-8", skipNul = TRUE)
+```
+
+## Basic Exploratory Analysis:  
+
+Nummber of English blog lines: `r length(dataBlogEn)`.  
+Nummber of English news lines: `r length(dataNewsEn)`.  
+Nummber of English Twitter lines: `r length(dataTwitterEn)`.  
+Nummber of words in English blog:  `r sum(sapply(gregexpr("[[:alpha:]]+", dataBlogEn), function(x) sum(x > 0)))`.  
+Nummber of words in English News: `r sum(sapply(gregexpr("[[:alpha:]]+", dataNewsEn), function(x) sum(x > 0)))`.   
+Nummber of words in English Twitter: `r sum(sapply(gregexpr("[[:alpha:]]+", dataTwitterEn), function(x) sum(x > 0)))`.  
+
+
+
+## Sampling  
+
+Now, because the files are too big to be handled by my computer, 2000 lines of each file are sampled and binded and used in the report.  
+
+```{r sample, warning=FALSE, message=FALSE}
+sampleBlog <- readLines("en_US.blogs.txt", 2000)
+sampleNews <- readLines("en_US.news.txt", 2000)
+sampleTwitter <- readLines("en_US.Twitter.txt", 2000)
+bindData <- c(sampleBlog, sampleNews, sampleTwitter)
+```
+
+## Tidying Up the Text
+
+All numbers and non-word letters, punctuations, extra spaces and stop words are removed from the text and uppercase letters are lowercased.  
+```{r dataclean, warning=FALSE, message=FALSE, comment=""}
+
+#Removing all non word and number characters
+bindData <- gsub('\\W', ' ', bindData)
+#Removing all numbers
+bindData <- gsub('\\d', ' ', bindData)
+#Conveting all letters into lowercase
+bindData <- tolower(bindData)
+#Removing stop words
+bindData <- removeWords(bindData, stopwords(kind = "en"))
+#removing all one-letter words
+bindData <- gsub("\\b\\w\\b", " ", bindData)
+#removing all empty spaces
+bindData <- gsub("\\s{2,}", " ", bindData)
+```
+
+## Corpus  
+
+The cleaned text is turned into a corpus:  
+```{r corpusbuild,  unigram, bigram and trigram}
+dataCorpus <- Corpus(VectorSource(bindData))
+```
+
+## N-Gram Tokenization
+
+Unigram, bigram and trigram are built using RWeka package:  
+```{r tokenize,  unigram, bigram and trigram}
+oneGramToken <- NGramTokenizer(dataCorpus, Weka_control(min = 1, max = 1))
+oneGram <- data.frame(table(oneGramToken))
+oneGram <- oneGram[order(oneGram$Freq, decreasing = TRUE),]
+colnames(oneGram) <- c("Word", "Freq")
+oneGram <- head(oneGram, 12) 
+oneGramFreqPlot <- ggplot(oneGram, aes(x=reorder(Word, Freq),y=Freq)) + 
+  geom_bar(stat="identity", fill=  "white", color='black') + 
+  ggtitle("Unigrams Frequency") + 
+  xlab("Words") + ylab("Frequency") + 
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+
+twoGramToken <- NGramTokenizer(dataCorpus, Weka_control(min = 2, max = 2))
+twoGram <- data.frame(table(twoGramToken))
+twoGram <- twoGram[order(twoGram$Freq, decreasing = TRUE),]
+colnames(twoGram) <- c("Word", "Freq")
+twoGram <- head(twoGram, 12) 
+twoGramFreqPlot <- ggplot(twoGram, aes(x=reorder(Word, Freq),y=Freq)) + 
+  geom_bar(stat="identity", fill=  "white", color='black') + 
+  ggtitle("Bigrams Frequency") + 
+  xlab("Words") + ylab("Frequency") + 
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+
+threeGramToken <- NGramTokenizer(dataCorpus,Weka_control(min = 3, max = 3))
+threeGram <- data.frame(table(threeGramToken))
+threeGram <- threeGram[order(threeGram$Freq, decreasing = TRUE),]
+colnames(threeGram) <- c("Word", "Freq")
+threeGram <- head(threeGram, 12) 
+threeGramFreqPlot <- ggplot(threeGram, aes(x=reorder(Word, Freq),y=Freq)) + 
+  geom_bar(stat="identity", fill=  "white", color='black') + 
+  ggtitle("Trigrams Frequency") + 
+  xlab("Words") + ylab("Frequency") + 
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+oneGramFreqPlot
+twoGramFreqPlot
+threeGramFreqPlot
+```
+
+## Next Steps
+
+After performing basic exploratory data analysis, the next steps would be to build a predictive model and to develop a shiny app.  
+
+## Appendix  
+
+The R Markdown code to generate this report can be found [here](https://github.com/pourkhesalian/CapstoneWeek2).
+
+
