@@ -372,8 +372,7 @@ summary {
 
 <div id="coursera-data-science-capstone-week-2" class="section level2">
 <h2>Coursera Data Science Capstone (Week 2)</h2>
-<p>The presented document shows some data exploratroy analysis on the text data that can be downloaded from <a href="https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip">here</a>.<br />
-The main objective of this assignment is to make the sample corpus, build the 2-gram and 3-gram TDM and carry out exploratory analysis on the corpus.</p>
+<p>The presented document shows some data exploratroy analysis on the text data that can be downloaded from <a href="https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip">here</a>. The main objective of this assignment is to make the sample corpus, build the 2-gram and 3-gram TDM and carry out exploratory analysis on the corpus.</p>
 </div>
 <div id="preparation" class="section level2">
 <h2>Preparation</h2>
@@ -400,6 +399,9 @@ Nummber of English Twitter lines: 2360148.<br />
 Nummber of words in English blog: 37873860.<br />
 Nummber of words in English News: 2662070.<br />
 Nummber of words in English Twitter: 30555611.</p>
+</div>
+<div id="sampling" class="section level2">
+<h2>Sampling</h2>
 <p>Now, because the files are too big to be handled by my computer, 2000 lines of each file are sampled and binded and used in the report.</p>
 <pre class="r"><code>sampleBlog &lt;- readLines(&quot;en_US.blogs.txt&quot;, 2000)
 sampleNews &lt;- readLines(&quot;en_US.news.txt&quot;, 2000)

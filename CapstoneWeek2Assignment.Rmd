@@ -7,7 +7,7 @@ output: html_document
 
 ## Coursera Data Science Capstone (Week 2)  
 
-The presented document shows some data exploratroy analysis on the text data that can be downloaded from [here](https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip).  
+The presented document shows some data exploratroy analysis on the text data that can be downloaded from [here](https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip). 
 The main objective of this assignment is to make the sample corpus, build the 2-gram and 3-gram TDM and carry out exploratory analysis on the corpus.  
 
 ## Preparation  
